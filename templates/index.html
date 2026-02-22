@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Invoice Automation | Samreen Musthak</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[#0f172a] min-h-screen flex items-center justify-center">
+
+<div class="w-full max-w-5xl px-6 py-10">
+
+    <!-- Header -->
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-white mb-2">
+            Smart Invoice Automation
+        </h1>
+        <p class="text-slate-300 text-lg">
+            AI-powered invoice processing system
+        </p>
+    </div>
+
+    <!-- Upload Card -->
+    <div class="bg-white rounded-2xl shadow-2xl p-8 mb-10">
+
+        <form action="/upload" method="post" enctype="multipart/form-data">
+
+        <div id="drop-area"
+            class="flex flex-col items-center justify-center border-2 border-dashed border-slate-400 rounded-xl p-10 text-center cursor-pointer hover:border-[#1e3a8a] transition duration-300 bg-slate-50">
+
+            <svg class="w-12 h-12 text-[#1e3a8a] mb-4" fill="none" stroke="currentColor" stroke-width="1.5"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 15a4 4 0 01.88-7.903A5 5 0 0115.9 6H16a4 4 0 010 8h-1m-4-4l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+
+            <p class="text-slate-600 mb-2 font-medium">
+                Drag & Drop your invoice here
+            </p>
+
+            <p class="text-sm text-slate-400 mb-4">
+                or click to browse
+            </p>
+
+            <input type="file" name="file" id="fileInput" class="hidden">
+
+            <p id="file-name" class="text-sm text-[#1e3a8a] font-semibold"></p>
+        </div>
+
+        <div class="text-center mt-6">
+            <button type="submit"
+                class="bg-[#1e3a8a] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#1e40af] transition duration-300 shadow-lg">
+                Process Invoice
+            </button>
+        </div>
+
+    </form>
+
+    <script>
+        const dropArea = document.getElementById("drop-area");
+        const fileInput = document.getElementById("fileInput");
+        const fileName = document.getElementById("file-name");
+
+        dropArea.addEventListener("click", () => fileInput.click());
+
+        fileInput.addEventListener("change", () => {
+            if (fileInput.files.length > 0) {
+                fileName.textContent = fileInput.files[0].name;
+            }
+        });
+
+        dropArea.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropArea.classList.add("border-[#1e3a8a]", "bg-slate-100");
+        });
+
+        dropArea.addEventListener("dragleave", () => {
+            dropArea.classList.remove("border-[#1e3a8a]", "bg-slate-100");
+        });
+
+        dropArea.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropArea.classList.remove("border-[#1e3a8a]", "bg-slate-100");
+            fileInput.files = e.dataTransfer.files;
+
+            if (fileInput.files.length > 0) {
+                fileName.textContent = fileInput.files[0].name;
+            }
+        });
+    </script>
+
+    </div>
+
+    {% if result %}
+
+    <!-- Results Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-gray-500 text-sm mb-2">Invoice Number</h3>
+            <p class="text-2xl font-semibold text-[#0f172a]">
+                {{ result["Invoice Number"] }}
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-gray-500 text-sm mb-2">Invoice Date</h3>
+            <p class="text-2xl font-semibold text-[#0f172a]">
+                {{ result["Date"] }}
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-gray-500 text-sm mb-2">Subtotal</h3>
+            <p class="text-2xl font-semibold text-[#0f172a]">
+                AED {{ result["Subtotal"] }}
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-gray-500 text-sm mb-2">VAT (5%)</h3>
+            <p class="text-2xl font-semibold text-green-600">
+                AED {{ result["VAT (5%)"] }}
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-lg md:col-span-2 text-center">
+            <h3 class="text-gray-500 text-sm mb-2">Total Amount</h3>
+            <p class="text-3xl font-bold text-[#1e3a8a]">
+                AED {{ result["Total Amount"] }}
+            </p>
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
